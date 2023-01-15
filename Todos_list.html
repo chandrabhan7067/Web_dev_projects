@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+
+</head>
+<body>  
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/javascript_files/About.txt" target="_blank">About</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="text-center my-4">Todos list</h2>
+
+            <div class="form-group">
+                <label for="Title">Title</label>
+                    <input type="text" class="form-control" id="Title" aria-describedby="emailHelp"
+                        placeholder="Enter title">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your todo's task with anyone
+                    else.</small>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" rows="3"></textarea>
+              </div>
+
+            <button id="add" class="btn btn-primary ">Add to list</button>
+            <button id="clear" class="btn btn-primary mx-5" onclick="clearStorage() ">Clear list</button>
+
+        <div id="items" class="my-4">
+            <h3>your items</h3>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">SNo</th>
+                    <th scope="col">Items title</th>
+                    <th scope="col">Item Description</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="tablebody">
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Get some coffee</td>
+                    <td>You are coder that't why you need coffee</td>
+                    <td><button class="btn btn-sm btn-primary">Delete</button></td>
+                  </tr>
+                 
+                </tbody>
+              </table>
+        </div>
+
+    </div> 
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+<!-- we have one another optiong to store the data in browser which is IndexedDB -->
+<!-- resong why we use localstorage because localStorage is slightly faster than IndexedDB.localStorage is also much easier to get started with, making it the more popular choice. -->
+<!-- If you want to store structured data on the client side, IndexedDB is the better choice  But if you’re storing a simple, small amount of key-value pair data, use localStorage.  -->
+
+    <script>
+
+        function getAndUpdate(){
+            tit = document.getElementById("Title").value;
+            dec = document.getElementById("description").value;
+            
+        // localstorage allow you to store key valur pair on your browser
+        // localstorage store the data in the form on string
+
+            if(localStorage.getItem('itemsJson') == null){
+                console.log("yes")
+                itemjsanArray = [];
+                itemjsanArray.push([tit,dec]);
+                localStorage.setItem('itemsJson',JSON.stringify(itemjsanArray))
+            }
+            else{
+                itemjsanArraystr = localStorage.getItem('itemsJson')        // hmne localstorage se pura data nikalke itemjsanArraystr me store kiya
+                itemjsanArray = JSON.parse(itemjsanArraystr);               // parse is used to convert JSON string to js object
+                itemjsanArray.push([tit,dec]);
+                localStorage.setItem('itemsJson',JSON.stringify(itemjsanArray))   // stringify used to convert object to string
+            }
+            update();
+        }
+
+        function update(){
+            
+            if(localStorage.getItem('itemsJson') == null){
+                itemjsanArray = [];
+                localStorage.setItem('itemsJson',JSON.stringify(itemjsanArray))     // stringify used to convert object/array to string
+            }
+            else{
+                itemjsanArraystr = localStorage.getItem('itemsJson')
+                itemjsanArray = JSON.parse(itemjsanArraystr);
+            }
+
+            tablebody = document.getElementById("tablebody");
+            let str = "";
+            /*
+            itemjsanArray.forEach((element,index)=>{
+                str += `
+                <tr>
+                    <th scope="row">${index+1}</th>
+                    <td>${element[0]}</td>
+                    <td>${element[1]}</td>
+                    <td><button class="btn btn-sm btn-primary" onclick=deleted(${index})>Delete</button></td>
+                  </tr>`;
+            });
+*/
+
+// Another option to travers the object
+            itemjsanArray.forEach(Travers)
+
+            function Travers(element,index){
+                str += `
+                <tr>
+                    <th scope="row">${index+1}</th>
+                    <td>${element[0]}</td>
+                    <td>${element[1]}</td>
+                    <td><button class="btn btn-sm btn-primary" onclick=deleted(${index})>Delete</button></td>
+                  </tr>`;
+            }
+
+            tablebody.innerHTML = str;
+        }
+
+        add = document.getElementById("add");
+        add.addEventListener("click",getAndUpdate);
+        update();
+
+        function deleted(itemindex){
+            console.log("delete",itemindex);
+            itemjsanArraystr = localStorage.getItem('itemsJson')
+            itemjsanArray = JSON.parse(itemjsanArraystr);
+
+            itemjsanArray.splice(itemindex,1);
+
+            localStorage.setItem('itemsJson',JSON.stringify(itemjsanArray))
+            update();
+        }        
+
+        function clearStorage(){
+            if(confirm("Do you realy want to clear ?")){
+                console.log("clearing");
+                localStorage.clear();
+                update();
+            }
+        }
+
+    </script>
+</body>
+
+</html>
